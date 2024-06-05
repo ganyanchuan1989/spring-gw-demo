@@ -1,0 +1,58 @@
+server:
+  port: 9999
+
+
+spring:
+  application:
+    name: demo-gateway
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+  cloud:
+    gateway:
+      # 配置网关发现机制
+      discovery:
+        # 开启网关处理逻辑
+        locator:
+          # 开启自动映射逻辑
+          # eg： http://gwip:gwport/service-name/xxx -> http://service-name/xxx
+          enabled: true
+          # 开启服务名称小写转换
+          lower-case-service-id: true
+      routes:
+        - id: xxxxxxx
+          uri: lb://DEMO-APP # http://localhost:8080/
+          predicates:
+            - Path=/api/**
+#            - Header=X-Request-Id, \d+
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@ipAddrKeyResolver}'
+                #令牌桶填充速率，允许用户每秒处理多少个请求
+                redis-rate-limiter.replenishRate: 1
+                #令牌桶总容量，允许在一秒钟内完成的最大请求数
+                redis-rate-limiter.burstCapacity: 2
+            - name: CircuitBreaker
+              args:
+                # 降级服务组名
+                name: myCircuitBreaker
+                fallbackUri: forward:/hystrixfallback
+#                  - RewritePath=/consumingServiceEndpoint, /backingServiceEndpoint
+            # 自定义过滤器
+            - MyRequestPath=xxx,ooo
+
+
+#  main:
+#    web-application-type: reactive
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8762/eureka/
+
+#debug: true
+

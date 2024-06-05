@@ -1,0 +1,23 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: demo-app # demo-app一样，模拟相同服务
+  cloud:
+    # 配置中心配置
+    config:
+      name: ${spring.application.name}
+      uri: http://localhost:9090/
+      profile: default
+      label: v0.0.1
+  config:
+    # Spring Cloud Config Client 已发生变化，从技术上讲，bootstrap.properties 和 bootstrap.yml 文件已被弃用。
+    import: optional:configserver:http://localhost:9090
+
+## 注册到eureka
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8762/eureka/
+
+debug: true

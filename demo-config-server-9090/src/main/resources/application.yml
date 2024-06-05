@@ -1,0 +1,26 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: demo-config-server
+  profiles:
+    # 使用jdbc
+    active: jdbc
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/configdb?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT&allowPublicKeyRetrieval=true
+    username: root
+    password: gyc89,./
+    driverClassName: com.mysql.cj.jdbc.Driver
+  cloud:
+    config:
+      server:
+        jdbc:
+          sql: SELECT `KEY`, VALUE from PROPERTIES where APPLICATION=? and PROFILE=? and LABEL=?
+        # 前缀
+#        prefix: config
+
+
+#debug: true
+

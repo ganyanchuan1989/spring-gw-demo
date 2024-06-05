@@ -1,0 +1,12 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: demo-app # demo-app一样，模拟相同服务
+
+# 注册到eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8762/eureka/
+#debug: true
